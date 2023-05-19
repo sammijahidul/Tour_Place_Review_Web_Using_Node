@@ -2,7 +2,6 @@ const exp = require('constants');
 const express = require('express');
 const fs = require('fs');
 const morgan = require('morgan');
-
 const app = express();
 const port = 4008
 
@@ -14,8 +13,8 @@ const tours = JSON.parse (
 app.use(morgan('dev'));
 app.use(express.json());
 
-// Tours routes for reading all data
-const getAllData = (req, res) => {
+// All controllers for Tour Resource
+const getAllTourData = (req, res) => {
     res.status(200).json
     ({
         status: 'success',
@@ -24,9 +23,8 @@ const getAllData = (req, res) => {
             tours
         }    
     }); 
-}
-// Tours routes for reading one single data
-const getOneData = (req, res) => {
+};
+const getOneTourData = (req, res) => {
     const id = Number(req.params.id);
     // Checking invalid id
     if(id > tours.length) {
@@ -44,8 +42,7 @@ const getOneData = (req, res) => {
         }    
     }); 
 }
-// Tour routes for Creating data
-const createTour = (req, res) => {
+const createATour = (req, res) => {
     // console.log(req.body);
     const newId = tours[tours.length -1].id + 1;
     const newTour = Object.assign({id: newId}, req.body);
@@ -61,29 +58,80 @@ const createTour = (req, res) => {
             }
         })
     })
-}
-// Routes for updating the data
-const updateTour = (req, res) => {
-    
+};
+const updateATour = (req, res) => {    
     console.log('Not written the logic');
     res.status(202).json({
         status: 'success',
     })
+};
+const deleteATour = (req, res) => {
+    console.log('Successfully deleted')
+    res.status(300).json({
+        status: 'success',
+    })
 }
-// 
+
+// All controllers for User resource
+const getAllUsers = (req, res) => {
+    console.log("Showing all users");
+    res.status(200).json({
+        status: 'success',
+    })
+};
+const createUser = (req, res) => {
+    console.log("Creating a user");
+    res.status(200).json({
+        status: 'success',
+    })
+};
+const getOneUser = (req, res) => {
+    console.log("Get one users");
+    res.status(200).json({
+        status: 'success',
+    })
+};
+const updateOneUser = (req, res) => {
+    console.log("Updaing a user");
+    res.status(201).json({
+        status: 'success',
+    })
+};
+const deleteUser = (req, res) => {
+    console.log("Showing all users");
+    res.status(300).json({
+        status: 'success',
+    })
+};
+
 // app.get('/api/v1/tours', getAllData);
 // app.get('/api/v1/tours/:id', getOneData);
 // app.post('/api/v1/tours', createTour);
 // app.patch('/api/v1/tours/:id', updateTour);
+
+// All routes and methods
 app
     .route('/api/v1/tours')
-    .get(getAllData)
-    .post(createTour);
+    .get(getAllTourData)
+    .post(createATour)
+    .delete(deleteATour);
 
 app
    .route('/api/v1/tours/:id')
-   .get(getOneData)
-   .patch(updateTour)
+   .get(getOneTourData)
+   .patch(updateATour)
+
+app
+    .route('/api/v1/users')
+    .get(getAllUsers)
+    .post(createUser);
+
+app
+    .route('/api/v1/user/:id')
+    .get(getOneUser).
+    patch(updateOneUser)
+    .delete(deleteUser)
+
 
 app.listen(port, () => {
     console.log(`app is listening at http://localhost:${port}`);
