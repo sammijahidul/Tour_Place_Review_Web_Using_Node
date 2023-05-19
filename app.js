@@ -1,6 +1,7 @@
 const exp = require('constants');
-const express = require('express')
+const express = require('express');
 const fs = require('fs');
+const morgan = require('morgan');
 
 const app = express();
 const port = 4008
@@ -10,6 +11,7 @@ const tours = JSON.parse (
 );
 
 // Middleware
+app.use(morgan('dev'));
 app.use(express.json());
 
 // Tours routes for reading all data
@@ -23,8 +25,6 @@ const getAllData = (req, res) => {
         }    
     }); 
 }
-app.get('/api/v1/tours', getAllData);
-
 // Tours routes for reading one single data
 const getOneData = (req, res) => {
     const id = Number(req.params.id);
@@ -44,12 +44,9 @@ const getOneData = (req, res) => {
         }    
     }); 
 }
-app.get('/api/v1/tours/:id', getOneData);
-
-// Tours routes for Creating data
-const createData = (req, res) => {
+// Tour routes for Creating data
+const createTour = (req, res) => {
     // console.log(req.body);
-
     const newId = tours[tours.length -1].id + 1;
     const newTour = Object.assign({id: newId}, req.body);
     tours.push(newTour);
@@ -65,14 +62,28 @@ const createData = (req, res) => {
         })
     })
 }
-app.post('/api/v1/tours', createData)
-
 // Routes for updating the data
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateTour = (req, res) => {
     
+    console.log('Not written the logic');
+    res.status(202).json({
+        status: 'success',
+    })
+}
+// 
+// app.get('/api/v1/tours', getAllData);
+// app.get('/api/v1/tours/:id', getOneData);
+// app.post('/api/v1/tours', createTour);
+// app.patch('/api/v1/tours/:id', updateTour);
+app
+    .route('/api/v1/tours')
+    .get(getAllData)
+    .post(createTour);
 
-});
-
+app
+   .route('/api/v1/tours/:id')
+   .get(getOneData)
+   .patch(updateTour)
 
 app.listen(port, () => {
     console.log(`app is listening at http://localhost:${port}`);
