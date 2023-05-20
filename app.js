@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const app = express();
 const port = 4008
 
+// Reading json data 
 const tours = JSON.parse (
     fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
@@ -109,29 +110,31 @@ const deleteUser = (req, res) => {
 // app.post('/api/v1/tours', createTour);
 // app.patch('/api/v1/tours/:id', updateTour);
 
-// All routes and methods
-app
-    .route('/api/v1/tours')
-    .get(getAllTourData)
-    .post(createATour)
-    .delete(deleteATour);
+// All routes and methods handler
+const tourRouter = express.Router();
+const userRouter = express.Router();
 
-app
-   .route('/api/v1/tours/:id')
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter)
+
+tourRouter
+    .route('/')
+    .get(getAllTourData)
+    .post(createATour)   
+tourRouter
+   .route('/:id')
    .get(getOneTourData)
    .patch(updateATour)
-
-app
-    .route('/api/v1/users')
+   .delete(deleteATour);
+userRouter
+    .route('/')
     .get(getAllUsers)
     .post(createUser);
-
-app
-    .route('/api/v1/user/:id')
+userRouter
+    .route('/:id')
     .get(getOneUser).
     patch(updateOneUser)
     .delete(deleteUser)
-
 
 app.listen(port, () => {
     console.log(`app is listening at http://localhost:${port}`);
