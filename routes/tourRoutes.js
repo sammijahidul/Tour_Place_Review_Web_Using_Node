@@ -5,10 +5,11 @@ const router = express.Router();
 
 // All posible router and methods
 router.param('id', tourController.checkId)
+
 router
     .route('/')
     .get(tourController.getAllTourData)
-    .post(tourController.createATour)   
+    .post(tourController.checkBody, tourController.createATour)   
 router
    .route('/:id')
    .get(tourController.getOneTourData)
