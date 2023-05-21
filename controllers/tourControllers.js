@@ -5,6 +5,17 @@ const tours = JSON.parse (
     fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 // All controllers/handlers related Tour
+exports.checkId = (req, res, next, val) => {
+    console.log(`Tour id is: ${val}`);
+    const id = Number(req.param.id);
+    if(id > tours.length) {
+        return res.status(404).json({
+            status: 'failed',
+            message: 'Invalid ID'
+        });
+    }
+    next();
+}
 exports.getAllTourData = (req, res) => {
     res.status(200).json
     ({
@@ -49,15 +60,15 @@ exports.createATour = (req, res) => {
         })
     })
 };
-exports.updateATour = (req, res) => {    
+exports.updateATour = (req, res) => {   
     console.log('Not written the logic');
     res.status(202).json({
         status: 'success',
     })
 };
-exports.deleteATour = (req, res) => {
+exports.deleteATour = (req, res) => {    
     console.log('Successfully deleted')
-    res.status(300).json({
+    res.status(204).json({
         status: 'success',
     })
 }
