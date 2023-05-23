@@ -10,7 +10,9 @@ mongoose.connect(DB)
     .then(() => {
     console.log("Db is connected");
     })
-    .catch(error => console.log(error));
+    .catch(error => 
+        console.log(error)
+        );
  
 const tourSchema = new mongoose.Schema({
     name: {
@@ -30,9 +32,9 @@ const tourSchema = new mongoose.Schema({
 const Tour = mongoose.model('Tour', tourSchema);
 
 const testTour = new Tour({
-    name: 'The Forest Hicker',
-    rating: 4.6,
-    price: 120
+    name: 'The Park ',
+    rating: 4.5,
+    price: 121
 })
 testTour
     .save()
