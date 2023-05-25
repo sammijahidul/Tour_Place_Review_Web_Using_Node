@@ -5,13 +5,24 @@ const Tour = require('../models/tourModel');
 // const tours = JSON.parse (
 //     fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 // );
-// All controllers/handlers related Tour
 
-exports.getAllTourData = (req, res) => {
-    res.status(200).json
-    ({
+// All controllers/handlers related Tour
+exports.getAllTourData = async (req, res) => {
+   try {
+    const allTours = await Tour.find();
+    res.status(200).json({
         status: 'success',
-    }); 
+        result: allTours.length,
+        data: {
+            allTours
+        }
+    })    
+   } catch (error) {
+    res.status(400).json({
+        status: 'failed',
+        message: 'Something went wrong'
+    })    
+   }
 };
 exports.getOneTourData = (req, res) => {
     res.status(200).json
@@ -21,7 +32,7 @@ exports.getOneTourData = (req, res) => {
 }
 exports.createATour = async (req, res) => {
     try {
-        const newTour = await Tour.create(req.body)
+        const newTour = await Tour.create(req.body);
         res.status(201).json({
             status: 'successful',
             data: {
