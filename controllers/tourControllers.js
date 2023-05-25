@@ -7,17 +7,6 @@ const Tour = require('../models/tourModel');
 // );
 // All controllers/handlers related Tour
 
-exports.checkBody = (req, res, next) => {
-    if(!req.body.name || !req.body.price) {
-        return res.status(400).json({
-            status: 'failed',
-            message: 'Name or Price is missing'
-        })
-
-    }
-    next();
-      
-}
 exports.getAllTourData = (req, res) => {
     res.status(200).json
     ({
@@ -30,10 +19,21 @@ exports.getOneTourData = (req, res) => {
         status: 'success',       
     }); 
 }
-exports.createATour = (req, res) => {   
-    res.status(201).json({
-        status: 'success',
-      })    
+exports.createATour = async (req, res) => {
+    try {
+        const newTour = await Tour.create(req.body)
+        res.status(201).json({
+            status: 'successful',
+            data: {
+                tour: newTour
+            }
+        })  
+    } catch (error) {
+        res.status(400).json({
+            status: 'Error',
+            message: 'Invalid data inserted'
+        })        
+    }   
 };
 exports.updateATour = (req, res) => {   
     res.status(202).json({
