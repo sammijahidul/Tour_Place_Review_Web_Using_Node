@@ -1,4 +1,3 @@
-const fs = require('fs');
 const Tour = require('../models/tourModel');
 
 // All controllers/handlers related Tour
@@ -71,8 +70,18 @@ exports.updateATour = async (req, res) => {
         })           
     }   
 };
-exports.deleteATour = (req, res) => {    
-    res.status(204).json({
-        status: 'success',
-    })
+exports.deleteATour = async (req, res) => {    
+    try {
+        await Tour.findByIdAndDelete(req.params.id);
+        res.status(204).json({
+            status: 'success',
+            data: null
+        })
+        
+    } catch (error) {
+        res.status(400).json({
+            status: 'Error',
+            message: 'Invalid data inserted'
+        })   
+    }    
 }
