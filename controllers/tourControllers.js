@@ -1,11 +1,6 @@
 const fs = require('fs');
 const Tour = require('../models/tourModel');
 
-// Reading json data 
-// const tours = JSON.parse (
-//     fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-// );
-
 // All controllers/handlers related Tour
 exports.getAllTourData = async (req, res) => {
    try {
@@ -24,11 +19,21 @@ exports.getAllTourData = async (req, res) => {
     })    
    }
 };
-exports.getOneTourData = (req, res) => {
-    res.status(200).json
-    ({
-        status: 'success',       
-    }); 
+exports.getOneTourData = async (req, res) => {
+    try {
+        const getOneTour = await Tour.findById(req.params.id);
+        res.status(200).json({
+            status: 'success',
+            data: {
+                getOneTour
+            }
+        })        
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            message: "Invalid Id"
+        })       
+    }
 }
 exports.createATour = async (req, res) => {
     try {
@@ -46,10 +51,25 @@ exports.createATour = async (req, res) => {
         })        
     }   
 };
-exports.updateATour = (req, res) => {   
-    res.status(202).json({
-        status: 'success',
-    })
+exports.updateATour = async (req, res) => {  
+    try {
+        const modifyATour = await Tour.findByIdAndUpdate(req.params.id, req.body, 
+            {
+                new: true,
+                runValidators: true
+            });
+        res.status(200).json({
+            status: 'success',
+            data: {
+                modifyATour
+            }
+        })    
+    } catch (error) {
+        res.status(400).json({
+            status: 'Error',
+            message: 'Invalid data inserted'
+        })           
+    }   
 };
 exports.deleteATour = (req, res) => {    
     res.status(204).json({
