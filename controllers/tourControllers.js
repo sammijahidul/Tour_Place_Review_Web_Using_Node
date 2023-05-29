@@ -98,7 +98,34 @@ exports.deleteATour = async (req, res) => {
         })   
     }    
 }
-
-exports.getTourStats = async (req, res) {
-    
+// Aggregation Pipeline
+exports.getTourStats = async (req, res) => {
+    try {
+        const stats = Tour.aggregate([
+            {
+                $match: { ratingAverage: { $gte: 4.5 } }
+            },
+            {
+                $group: {
+                    _id: null,
+                    avgRating: { $avg: '$ratingAverage'},
+                    avgPrice: { $avg: '$price'},
+                    minPrice: { $min: '$price'},
+                    maxPrice: { $max: '$price'},
+                }
+            }
+        ])
+        res.status(200).json({
+            status: 'success',
+            data: {
+                stats
+            }
+        })           
+    } catch (error) {
+        res.status(400).json({
+            status: 'Error',
+            message: 'Invalid data inserted'
+        })   
+   
+    }
 }
