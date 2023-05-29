@@ -101,7 +101,7 @@ exports.deleteATour = async (req, res) => {
 // Aggregation Pipeline
 exports.getTourStats = async (req, res) => {
     try {
-        const stats = Tour.aggregate([
+        const stats = await Tour.aggregate([
             {
                 $match: { ratingAverage: { $gte: 4.5 } }
             },
