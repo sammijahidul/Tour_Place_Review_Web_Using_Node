@@ -4,7 +4,7 @@ const APIFeatures = require('./../utils/apiFeatures');
 // All controllers/handlers related Tour
 
 exports.aliasTopTours = (req, res, next) => {
-    req.query.limit = '2';
+    req.query.limit = '3';
     req.query.sort = '-ratingAverage,price';
     req.query.fields = 'name,price,ratingAverage,summary,difficulty';
     next();
@@ -64,6 +64,7 @@ exports.createATour = async (req, res) => {
         })        
     }   
 };
+
 exports.updateATour = async (req, res) => {  
     try {
         const modifyATour = await Tour.findByIdAndUpdate(req.params.id, req.body, 
