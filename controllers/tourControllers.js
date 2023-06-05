@@ -129,7 +129,7 @@ exports.getTourStats = async (req, res) => {
             status: 'Error',
             message: 'Invalid data inserted'
         })   
-   
+  
     }
 }
 exports.getmonthlyplan = async (req, res) => {
