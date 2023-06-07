@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
+const catchAsync = require('./../utils/catchAsync');
 
 // All controllers/handlers related Tour
 
@@ -9,8 +10,7 @@ exports.aliasTopTours = (req, res, next) => {
     req.query.fields = 'name,price,ratingAverage,summary,difficulty';
     next();
 }
-exports.getAllTourData = async (req, res) => {
-   try {
+exports.getAllTourData = catchAsync(async (req, res, next) => {
     const features = new APIFeatures(Tour.find(), req.query)
                         .filter()
                         .sort()
@@ -25,15 +25,8 @@ exports.getAllTourData = async (req, res) => {
             allTours
         }
     })    
-   } catch (error) {
-    res.status(400).json({
-        status: 'failed',
-        message: 'Something went wrong'
-    })    
-   }
-};
-exports.getOneTourData = async (req, res) => {
-    try {
+});
+exports.getOneTourData = catchAsync(async (req, res, next) => {
         const getOneTour = await Tour.findById(req.params.id);
         res.status(200).json({
             status: 'success',
@@ -41,32 +34,17 @@ exports.getOneTourData = async (req, res) => {
                 getOneTour
             }
         })        
-    } catch (error) {
-        res.status(400).json({
-            status: 'failed',
-            message: "Invalid Id"
-        })       
-    }
-}
-exports.createATour = async (req, res) => {
-    try {
+});
+exports.createATour = catchAsync( async (req, res, next) => {
         const newTour = await Tour.create(req.body);
         res.status(201).json({
             status: 'successful',
             data: {
                 tour: newTour
             }
-        })  
-    } catch (error) {
-        res.status(400).json({
-            status: 'Failed',
-            message: error.message
-        })        
-    }   
-};
-
-exports.updateATour = async (req, res) => {  
-    try {
+        })   
+});
+exports.updateATour = catchAsync(async (req, res, next) => {  
         const modifyATour = await Tour.findByIdAndUpdate(req.params.id, req.body, 
             {
                 new: true,
@@ -77,31 +55,17 @@ exports.updateATour = async (req, res) => {
             data: {
                 modifyATour
             }
-        })    
-    } catch (error) {
-        res.status(400).json({
-            status: 'Error',
-            message: 'Invalid data inserted'
-        })           
-    }   
-};
-exports.deleteATour = async (req, res) => {    
-    try {
+        })        
+});
+exports.deleteATour = catchAsync(async (req, res, next) => {    
         await Tour.findByIdAndDelete(req.params.id);
         res.status(204).json({
             status: 'success',
             data: null
-        })        
-    } catch (error) {
-        res.status(400).json({
-            status: 'Error',
-            message: 'Invalid data inserted'
-        })   
-    }    
-}
+        })         
+});
 // Aggregation Pipeline
-exports.getTourStats = async (req, res) => {
-    try {
+exports.getTourStats = catchAsync(async (req, res, next) => {
         const stats = await Tour.aggregate([
             {
                 $match: { ratingsAverage: { $gte: 4.5 } }
@@ -124,16 +88,8 @@ exports.getTourStats = async (req, res) => {
                 stats
             }
         })           
-    } catch (error) {
-        res.status(400).json({
-            status: 'Error',
-            message: 'Invalid data inserted'
-        })   
-  
-    }
-}
-exports.getmonthlyplan = async (req, res) => {
-    try {
+});
+exports.getmonthlyplan = catchAsync(async (req, res, next) => {
         const year = req.params.year * 1;
         const plan = await Tour.aggregate([
             {
@@ -152,7 +108,6 @@ exports.getmonthlyplan = async (req, res) => {
                     _id: { $month: '$startDates'},
                     numTourStarts: { $sum: 1 },
                     tours: { $push: '$name'}
-
                 }
             },
             {
@@ -173,10 +128,4 @@ exports.getmonthlyplan = async (req, res) => {
                 plan
             }
         })                  
-    } catch (error) {
-        res.status(400).json({
-            status: 'Error',
-            message: 'Invalid data inserted'
-        })          
-    }
-}
+});
