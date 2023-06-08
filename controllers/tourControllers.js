@@ -1,6 +1,7 @@
 const Tour = require('../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
 
 // All controllers/handlers related Tour
 
@@ -28,6 +29,9 @@ exports.getAllTourData = catchAsync(async (req, res, next) => {
 });
 exports.getOneTourData = catchAsync(async (req, res, next) => {
         const getOneTour = await Tour.findById(req.params.id);
+        if(!getOneTour) {
+            return next(new AppError('Data with this id is not found', 404));
+        }
         res.status(200).json({
             status: 'success',
             data: {
@@ -50,6 +54,9 @@ exports.updateATour = catchAsync(async (req, res, next) => {
                 new: true,
                 runValidators: true
             });
+            if(!modifyATour) {
+                return next(new AppError('Data with this id is not found', 404));
+            }
         res.status(200).json({
             status: 'success',
             data: {
@@ -58,7 +65,10 @@ exports.updateATour = catchAsync(async (req, res, next) => {
         })        
 });
 exports.deleteATour = catchAsync(async (req, res, next) => {    
-        await Tour.findByIdAndDelete(req.params.id);
+        const deleteATour = await Tour.findByIdAndDelete(req.params.id);
+        if(!deleteATour) {
+            return next(new AppError('Data with this id is not found', 404));
+        }
         res.status(204).json({
             status: 'success',
             data: null
