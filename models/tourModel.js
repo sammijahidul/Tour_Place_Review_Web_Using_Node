@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
 
-
 const tourSchema = new mongoose.Schema({
     name: { 
         type: String,
@@ -28,7 +27,6 @@ const tourSchema = new mongoose.Schema({
         enum: {
             values: ['easy', 'medium', 'difficult'],
             message: 'You must choose: difficulty, easy or medium'
-
         } 
     },
     ratingsAverage: {
@@ -36,7 +34,6 @@ const tourSchema = new mongoose.Schema({
         default: 4.5,
         min: [1, 'Rating must be above 1'],
         max: [5, 'Rating must be below 5']
-
     },
     ratingsQuantity: {
         type: Number,
