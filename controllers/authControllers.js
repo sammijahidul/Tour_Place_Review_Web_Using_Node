@@ -39,3 +39,15 @@ exports.login = catchAsync (async (req, res, next) => {
         token
     })
 });
+exports.protect = catchAsync (async (req, res, next) => {
+    let token;
+    if(req.headers.authorizaation && req.headers.authorizaation.starsWith('Bearer')) 
+    {
+        token = req.headers.authorizaation.split(' ')[1];
+    }
+    console.log(token);
+    if(!token) {
+        return next (new AppError('You are not logged it, please login to get access', 401));
+    };  
+    next();
+})
