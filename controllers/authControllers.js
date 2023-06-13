@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const catchAsync = require("../utils/catchAsync");
@@ -40,14 +40,23 @@ exports.login = catchAsync (async (req, res, next) => {
     })
 });
 exports.protect = catchAsync (async (req, res, next) => {
+    //Checking token if it's there or not
     let token;
-    if(req.headers.authorizaation && req.headers.authorizaation.starsWith('Bearer')) 
+    if(
+       req.headers.authorization && 
+       req.headers.authorization.startsWith('Bearer')
+       )
     {
-        token = req.headers.authorizaation.split(' ')[1];
+        token = req.headers.authorization.split(' ')[1];
     }
     console.log(token);
     if(!token) {
-        return next (new AppError('You are not logged it, please login to get access', 401));
-    };  
+        return next(new AppError('You are not logged in, please login to access', 401));
+    }
+    // Verification token
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    console.log(decoded);
+
+
     next();
-})
+});
