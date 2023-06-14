@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
@@ -15,7 +14,12 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         validate: [validator.isEmail, 'Please provide a valid email']
     },
-    photo: String,           
+    photo: String,
+    role: {
+        type: String, 
+        enum: ['admin', 'user', 'guide', 'lead-guide'],
+        default: 'user'
+    },      
     password: {
         type: String,
         required: [true, 'You must have to provide the password'],
