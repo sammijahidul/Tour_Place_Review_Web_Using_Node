@@ -4,9 +4,7 @@ const authController = require("../controllers/authControllers");
 
 const router = express.Router();
 
-// All posible router and methods
-// router.param('id', tourController.checkId)
-
+// All routes related Tour Resource
 router
     .route('/top-5-cheap')
     .get(tourController.aliasTopTours, tourController.getAllTourData);
