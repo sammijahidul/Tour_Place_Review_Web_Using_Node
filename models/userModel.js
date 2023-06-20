@@ -61,6 +61,7 @@ userSchema.pre('save', function(next) {
     next();
 
 });
+// Query Middleware
 userSchema.pre(/^find/, function(next) {
     this.find({active: {$ne: false}})
     next();
