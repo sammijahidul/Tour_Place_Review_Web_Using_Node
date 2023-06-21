@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require("../controllers/userControllers");
-const authController = require("../controllers/authControllers")
+const authController = require("../controllers/authControllers");
+
 
 // All routes related User Resource
 const router = express.Router();
@@ -22,6 +23,8 @@ router
     .route('/:id')
     .get(userController.getOneUser)
     .patch(userController.updateOneUser)
-    .delete(userController.deleteUser)
+    .delete(userController.deleteUser);
+
+
 
 module.exports = router;    
