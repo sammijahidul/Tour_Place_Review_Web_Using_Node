@@ -66,11 +66,7 @@ exports.getOneUser = (req, res) => {
         status: 'success',
     })
 };
-exports.updateOneUser = (req, res) => {
-    console.log("Updaing a user");
-    res.status(201).json({
-        status: 'success',
-    })
-};
+//Update user information except password
+exports.updateUser = factory.updateOne(User); 
 //Delete a user
 exports.deleteUser = factory.deleteOne(User);

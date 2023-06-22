@@ -29,3 +29,4 @@ exports.createAReview = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteAReview = factory.deleteOne(Review);
+exports.updateReview = factory.updateOne(Review);

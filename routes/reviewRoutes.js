@@ -13,7 +13,8 @@ router
      );
 router
      .route('/:id')
-     .delete(reviewController.deleteAReview);    
+     .delete(reviewController.deleteAReview)
+     .patch(reviewController.updateReview);    
 
 module.exports = router;
 
