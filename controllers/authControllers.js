@@ -75,7 +75,7 @@ exports.protect = catchAsync (async (req, res, next) => {
     {
         token = req.headers.authorization.split(' ')[1];
     }
-    console.log(token);
+    // console.log(token);
     if(!token) {
         return next(new AppError('You are not logged in, please login to access', 401));
     }
@@ -96,7 +96,7 @@ exports.protect = catchAsync (async (req, res, next) => {
 });
 exports.restrictTo = (...roles) => (req, res, next) => {
     if(!roles.includes(req.user.role)) {
-        return next (new AppError('You don not have permission', 403))
+        return next (new AppError('You do not have permission', 403))
     };
     next();
 };
@@ -126,7 +126,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     } catch (error) {
         user.passwordResetToken = undefined;
         // eslint-disable-next-line no-unused-expressions
-        user.passwordResetExpires = undefined,
+        user.passwordResetExpires = undefined;
         await user.save({ validateBeforeSave: false });
         
         return next (new AppError('There was an error sending to email'), 500)
