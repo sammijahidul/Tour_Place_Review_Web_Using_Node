@@ -31,12 +31,6 @@ router
    .delete(
         authController.protect, 
         authController.restrictTo('admin', 'lead-guide'), 
-        tourController.deleteATour
-        );
-// router
-//     .route('/:tourId/reviews')
-//     .post(authController.protect, 
-//           authController.restrictTo('user'), 
-//           reviewController.createAReview);            
-
+        tourController.deleteATour);
+        
 module.exports = router;   

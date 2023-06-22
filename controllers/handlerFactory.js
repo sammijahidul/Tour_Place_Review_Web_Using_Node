@@ -1,5 +1,6 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const APIFeatures = require("../utils/apiFeatures");
 
 // Creating document handler
 exports.createOne = Model => catchAsync( async (req, res, next) => {
@@ -38,6 +39,40 @@ exports.deleteOne = Model => catchAsync(async (req, res, next) => {
         status: 'success',
         data: null
     })         
+});
+// Getting document handler
+exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => { 
+    let query = await Model.findById(req.params.id);
+    if(popOptions) query = query.populate(popOptions);
+    const doc = await query;
+    if(!doc) {
+        return next(new AppError('Data with this id is not found', 404));
+    }
+    res.status(200).json({
+        status: 'success',
+        data: {
+            data: doc
+        }
+    })        
+});
+// Getting all document handler
+exports.getAll = Model => catchAsync(async (req, res, next) => {
+    let filter = {};
+    if(req.params.tourId) filter = { tour: req.params.tourId};
+    const features = new APIFeatures(Model.find(filter), req.query)
+                        .filter()
+                        .sort()
+                        .fieldslimit()
+                        .paginate();
+    const doc = await features.query;
+    // const allTours = await Tour.find();
+    res.status(200).json({
+        status: 'success',
+        result: doc.length,
+        data: {
+            data: doc
+        }
+    })    
 });
 
 

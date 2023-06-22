@@ -13,6 +13,7 @@ router
            reviewController.createAReview);
 router
      .route('/:id')
+     .get(reviewController.getAReview)
      .delete(reviewController.deleteAReview)
      .patch(reviewController.updateReview);    
 

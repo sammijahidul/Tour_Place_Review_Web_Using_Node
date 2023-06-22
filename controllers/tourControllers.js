@@ -1,48 +1,15 @@
 const Tour = require('../models/tourModel');
-const APIFeatures = require("../utils/apiFeatures");
+// const APIFeatures = require("../utils/apiFeatures");
 const catchAsync = require("../utils/catchAsync");
-const AppError = require("../utils/appError");
+// const AppError = require("../utils/appError");
 const factory = require('./handlerFactory');
-
-// All controllers/handlers related Tour
 
 exports.aliasTopTours = (req, res, next) => {
     req.query.limit = '5';
     req.query.sort = '-ratingAverage,price';
     req.query.fields = 'name,price,ratingAverage,summary,difficulty';
     next();
-}
-exports.getAllTourData = catchAsync(async (req, res, next) => {
-    const features = new APIFeatures(Tour.find(), req.query)
-                        .filter()
-                        .sort()
-                        .fieldslimit()
-                        .paginate();
-    const allTours = await features.query;
-    // const allTours = await Tour.find();
-    res.status(200).json({
-        status: 'success',
-        result: allTours.length,
-        data: {
-            allTours
-        }
-    })    
-});
-exports.getOneTourData = catchAsync(async (req, res, next) => {
-        const getOneTour = await Tour.findById(req.params.id).populate('reviews');
-        if(!getOneTour) {
-            return next(new AppError('Data with this id is not found', 404));
-        }
-        res.status(200).json({
-            status: 'success',
-            data: {
-                getOneTour
-            }
-        })        
-});
-exports.createATour = factory.createOne(Tour);
-exports.updateATour = factory.updateOne(Tour);
-exports.deleteATour = factory.deleteOne(Tour);
+};
 // Aggregation Pipeline
 exports.getTourStats = catchAsync(async (req, res, next) => {
         const stats = await Tour.aggregate([
@@ -108,3 +75,9 @@ exports.getmonthlyplan = catchAsync(async (req, res, next) => {
             }
         })                  
 });
+
+exports.getAllTourData = factory.getAll(Tour);
+exports.getOneTourData = factory.getOne(Tour, {path: 'reviews'});
+exports.createATour = factory.createOne(Tour);
+exports.updateATour = factory.updateOne(Tour);
+exports.deleteATour = factory.deleteOne(Tour);
