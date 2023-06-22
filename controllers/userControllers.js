@@ -42,7 +42,10 @@ exports.deleteMe = catchAsync(async(req, res, next) => {
         data: null
     })
 });
-
+exports.getMe = (req, res, next) => {
+    req.params.id = req.user.id;
+    next();
+};
 exports.createUser = factory.createOne(User);
 exports.getAllUsers = factory.getAll(User);
 exports.getOneUser = factory.getOne(User);
