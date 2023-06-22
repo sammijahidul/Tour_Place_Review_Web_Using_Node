@@ -54,12 +54,7 @@ exports.deleteMe = catchAsync(async(req, res, next) => {
         data: null
     })
 })
-exports.createUser = (req, res) => {
-    console.log("Creating a user");
-    res.status(200).json({
-        status: 'success',
-    })
-};
+exports.createUser = factory.createOne(User);
 exports.getOneUser = (req, res) => {
     console.log("Get one users");
     res.status(200).json({

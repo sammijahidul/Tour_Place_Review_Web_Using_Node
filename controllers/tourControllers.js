@@ -40,26 +40,8 @@ exports.getOneTourData = catchAsync(async (req, res, next) => {
             }
         })        
 });
-exports.createATour = catchAsync( async (req, res, next) => {
-        const newTour = await Tour.create(req.body);
-        res.status(201).json({
-            status: 'successful',
-            data: {
-                tour: newTour
-            }
-        })   
-});
+exports.createATour = factory.createOne(Tour);
 exports.updateATour = factory.updateOne(Tour);
-// exports.deleteATour = catchAsync(async (req, res, next) => {    
-//         const deleteATour = await Tour.findByIdAndDelete(req.params.id);
-//         if(!deleteATour) {
-//             return next(new AppError('Data with this id is not found', 404));
-//         }
-//         res.status(204).json({
-//             status: 'success',
-//             data: null
-//         })         
-// });
 exports.deleteATour = factory.deleteOne(Tour);
 // Aggregation Pipeline
 exports.getTourStats = catchAsync(async (req, res, next) => {

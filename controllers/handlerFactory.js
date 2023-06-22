@@ -1,16 +1,15 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
-// Deleting document handler
-exports.deleteOne = Model => catchAsync(async (req, res, next) => {    
-    const doc = await Model.findByIdAndDelete(req.params.id);
-    if(!doc) {
-        return next(new AppError('No Document found with that ID', 404));
-    }
-    res.status(204).json({
+// Creating document handler
+exports.createOne = Model => catchAsync( async (req, res, next) => {
+    const doc = await Model.create(req.body);
+    res.status(201).json({
         status: 'success',
-        data: null
-    })         
+        data: {
+            tour: doc
+        }
+    })   
 });
 // Updating document handler
 exports.updateOne = Model => catchAsync(async (req, res, next) => {  
@@ -29,6 +28,19 @@ exports.updateOne = Model => catchAsync(async (req, res, next) => {
         }
     })        
 });
+// Deleting document handler
+exports.deleteOne = Model => catchAsync(async (req, res, next) => {    
+    const doc = await Model.findByIdAndDelete(req.params.id);
+    if(!doc) {
+        return next(new AppError('No Document found with that ID', 404));
+    }
+    res.status(204).json({
+        status: 'success',
+        data: null
+    })         
+});
+
+
 
 
 
