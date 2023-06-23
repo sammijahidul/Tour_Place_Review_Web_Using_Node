@@ -64,6 +64,7 @@ exports.getAll = Model => catchAsync(async (req, res, next) => {
                         .sort()
                         .fieldslimit()
                         .paginate();
+    // const doc = await features.query.explain();
     const doc = await features.query;
     // const allTours = await Tour.find();
     res.status(200).json({

@@ -46,7 +46,6 @@ const userSchema = new mongoose.Schema({
         select: false
     }          
 });
-
 userSchema.pre('save', async function(next) {
     // if password is modified then this line will run
     if(!this.isModified('password')) return next();
