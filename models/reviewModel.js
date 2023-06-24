@@ -33,18 +33,6 @@ const reviewSchema = new mongoose.Schema(
     }
 );
 
-reviewSchema.pre(/^find/, function(next) {
-    // this.populate({
-    //     path: 'tour',
-    //     select: 'name'
-    // })
-    this.populate({
-        path: 'user',
-        select: 'name photo'
-    });
-    next();
-});
-// Static Method
 reviewSchema.statics.calcAverageRatings = async function(tourId) {
     const stats = await this.aggregate([
         {
@@ -58,16 +46,47 @@ reviewSchema.statics.calcAverageRatings = async function(tourId) {
             }
         }
     ]);
-    console.log(stats);
-    await Tour.findByIdAndUpdate(tourId, {
-        ratingsQuantity: stats[0].nRating,
-        ratingsAverage: stats[0].avgRating
-    });
+    // console.log(stats);
+    if (stats.length > 0) {
+        await Tour.findByIdAndUpdate(tourId, {
+            ratingsQuantity: stats[0].nRating,
+            ratingsAverage: stats[0].avgRating
+        }); 
+    } else {
+        await Tour.findByIdAndUpdate(tourId, {
+            ratingsQuantity: 0,
+            ratingsAverage: 4.5
+        }); 
+    }    
 };
-reviewSchema.post('save', function() {
+reviewSchema.pre(/^find/, function(next) {
+    // this.populate({
+    //     path: 'tour',
+    //     select: 'name'
+    // })
+    this.populate({
+        path: 'user',
+        select: 'name photo'
+    });
+    next();
+});
+// Static Method
+reviewSchema.post('save', async function() {
     // This points to current review
-    this.constructor.calcAverageRatings(this.tour);
+    await this.constructor.calcAverageRatings(this.tour);
     // next();
-})
+});
+//FindByIdAndUpdate
+//FindByIdAndDelete
+reviewSchema.pre(/^findOneAnd/, async function(next) {
+    this.data = await this.clone().findOne();
+    //  console.log(this.data);
+    next();
+});
+reviewSchema.post(/^findOneAnd/, async function() {
+     await this.data.constructor.calcAverageRatings(this.data.tour);  
+      
+});   
+
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;
