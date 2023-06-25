@@ -1,8 +1,14 @@
 const Tour = require('../models/tourModel');
+const AppError = require('../utils/appError');
 // const APIFeatures = require("../utils/apiFeatures");
 const catchAsync = require("../utils/catchAsync");
-// const AppError = require("../utils/appError");
 const factory = require('./handlerFactory');
+
+exports.getAllTourData = factory.getAll(Tour);
+exports.getOneTourData = factory.getOne(Tour, {path: 'reviews'});
+exports.createATour = factory.createOne(Tour);
+exports.updateATour = factory.updateOne(Tour);
+exports.deleteATour = factory.deleteOne(Tour);
 
 exports.aliasTopTours = (req, res, next) => {
     req.query.limit = '5';
@@ -75,9 +81,23 @@ exports.getmonthlyplan = catchAsync(async (req, res, next) => {
             }
         })                  
 });
-
-exports.getAllTourData = factory.getAll(Tour);
-exports.getOneTourData = factory.getOne(Tour, {path: 'reviews'});
-exports.createATour = factory.createOne(Tour);
-exports.updateATour = factory.updateOne(Tour);
-exports.deleteATour = factory.deleteOne(Tour);
+// '/tours-within/:distance/center/:latlng/unit/:unit'
+// /tours-within/233/center/34.07457922272319, -118.21221838448349/unit/mi
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+    const { distance, latlng, unit} = req.params;
+    const [lat, lng] = latlng.split(',');
+    const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+    if(!lat || !lng) {
+        next(new AppError('please provie latitute longtitude in current format', 400));
+    }
+    const tours = await Tour.find({ 
+               startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }
+               });
+    res.status(200).json({
+        status: 'success',
+        results: tours.length,
+        data : {
+            data: tours
+        }
+    })
+});

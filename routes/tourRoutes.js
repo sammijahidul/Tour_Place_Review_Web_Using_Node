@@ -22,7 +22,10 @@ router
     .route('/tour-monthly/:year')
     .get(authController.protect, 
          authController.restrictTo('admin', 'guide', 'lead-guide'),
-         tourController.getmonthlyplan);     
+         tourController.getmonthlyplan);
+router
+    .route('/tours-within/:distance/center/:latlng/unit/:unit')
+    .get(tourController.getToursWithin);      
 router
     .route('/')
     .get(tourController.getAllTourData)
