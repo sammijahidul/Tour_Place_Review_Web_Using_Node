@@ -11,7 +11,7 @@ const globalErrorHandler = require('./controllers/errorControllers');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
-const viewRouter = require('././routes/viewRoutes');
+const viewRouter = require("./routes/viewRoutes");
 
 const app = express();
 
