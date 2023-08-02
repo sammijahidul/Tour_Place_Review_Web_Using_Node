@@ -1,29 +1,39 @@
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const mongoseSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
+
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorControllers');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
-const viewRouter = require("./routes/viewRoutes");
+const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
 app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(__dirname, 'views') )
 
-// Serving static files
+// serving static file
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware
-//Set security HTTP headers
-app.use(helmet());
+app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://cdnjs.cloudflare.com"],
+        connectSrc: ["'self'", "http://127.0.0.1:4007"],
+        // Add more directives as needed to meet your application's requirements
+      },
+    })
+  );
 
 // Development logging
 if(process.env.NODE_ENV === 'development') {
@@ -39,6 +49,7 @@ app.use('/api', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 // Data sanitization against nosql query injection
 app.use(mongoseSanitize());
@@ -54,7 +65,7 @@ app.use(hpp({
 }));
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
-    console.log(req.headers);
+    console.log(req.cookies);
     next();
 });
 
