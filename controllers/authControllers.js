@@ -96,6 +96,31 @@ exports.protect = catchAsync (async (req, res, next) => {
     req.user = currentUser;
     next();
 });
+
+// Only for rendered pages, no errors
+exports.isLoggedIn = catchAsync (async (req, res, next) => {
+    if (req.cookies.jwt) { 
+      // Verify token    
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt, 
+        process.env.JWT_SECRET
+       );
+      // Check if youser still exist
+      const currentUser = await User.findById(decoded.id);
+      if(!currentUser) {
+         return next();
+       }
+      // Check the user changed his password after the token was issued
+      if (currentUser.changedPasswordAfter(decoded.iat)) {
+         return next ();
+       };
+      // There is a logged in user
+      res.locals.user = currentUser
+      return next();
+   }
+   next();
+});
+
 exports.restrictTo = (...roles) => (req, res, next) => {
     if(!roles.includes(req.user.role)) {
         return next (new AppError('You do not have permission', 403))
