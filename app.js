@@ -29,7 +29,7 @@ app.use(
       directives: {
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "https://cdnjs.cloudflare.com"],
-        connectSrc: ["'self'", "http://127.0.0.1:4007"],
+        connectSrc: ["'self'", "http://127.0.0.1:4007", "ws://localhost:53792", "wss://localhost:53792"],
         // Add more directives as needed to meet your application's requirements
       },
     })
