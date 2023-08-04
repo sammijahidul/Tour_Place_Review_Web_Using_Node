@@ -29,6 +29,7 @@ const createSendToken = (user, statusCode, res) => {
         }
     });
 }
+
 exports.signup = catchAsync (async (req, res, next) => {
     const newUser = await User.create(req.body
         // name: req.body.name,
@@ -48,6 +49,7 @@ exports.signup = catchAsync (async (req, res, next) => {
     //     }
     // });
 });
+
 exports.login = catchAsync (async (req, res, next) => {
     const {email, password} = req.body;
     if (!email || !password) {
@@ -65,6 +67,15 @@ exports.login = catchAsync (async (req, res, next) => {
     //     token
     // })
 });
+
+exports.logout = (req, res) => {
+    res.cookie('jwt', 'loggedout', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    });
+    res.status(200).json({ status: 'success'});
+};
+
 exports.protect = catchAsync (async (req, res, next) => {
     //Checking token if it's there or not
     let token;
@@ -98,28 +109,32 @@ exports.protect = catchAsync (async (req, res, next) => {
 });
 
 // Only for rendered pages, no errors
-exports.isLoggedIn = catchAsync (async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
     if (req.cookies.jwt) { 
-      // Verify token    
-      const decoded = await promisify(jwt.verify)(
-        req.cookies.jwt, 
-        process.env.JWT_SECRET
-       );
-      // Check if youser still exist
-      const currentUser = await User.findById(decoded.id);
-      if(!currentUser) {
-         return next();
-       }
-      // Check the user changed his password after the token was issued
-      if (currentUser.changedPasswordAfter(decoded.iat)) {
-         return next ();
-       };
-      // There is a logged in user
-      res.locals.user = currentUser
-      return next();
+      // Verify token
+      try {
+        const decoded = await promisify(jwt.verify)(
+            req.cookies.jwt, 
+            process.env.JWT_SECRET
+        );
+        // Check if youser still exist
+        const currentUser = await User.findById(decoded.id);
+        if(!currentUser) {
+            return next();
+        }
+        // Check the user changed his password after the token was issued
+        if (currentUser.changedPasswordAfter(decoded.iat)) {
+            return next ();
+        };
+        // There is a logged in user
+        res.locals.user = currentUser
+        return next();
+    } catch (err) {
+        return next();
+    }   
    }
    next();
-});
+};
 
 exports.restrictTo = (...roles) => (req, res, next) => {
     if(!roles.includes(req.user.role)) {
@@ -127,6 +142,7 @@ exports.restrictTo = (...roles) => (req, res, next) => {
     };
     next();
 };
+
 exports.forgotPassword = catchAsync(async (req, res, next) => {
     // get user based on posted email
     const user = await User.findOne({ email: req.body.email  });
