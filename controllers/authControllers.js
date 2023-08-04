@@ -28,7 +28,7 @@ const createSendToken = (user, statusCode, res) => {
             user
         }
     });
-}
+};
 
 exports.signup = catchAsync (async (req, res, next) => {
     const newUser = await User.create(req.body
@@ -175,6 +175,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         return next (new AppError('There was an error sending to email'), 500)
     }   
 });
+
 exports.resetPassword = catchAsync(async(req, res, next) => {
     // Get user based on token
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
@@ -205,6 +206,7 @@ exports.resetPassword = catchAsync(async(req, res, next) => {
     // });
 
 });
+
 exports.updatePassword = catchAsync (async (req, res, next) => {
     // Get user from collection
     const user = await User.findById(req.user.id).select('+password');
