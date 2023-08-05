@@ -1,6 +1,9 @@
 const express = require('express');
+const  multer = require('multer');
 const userController = require("../controllers/userControllers");
 const authController = require("../controllers/authControllers");
+
+
 // All routes related User Resource
 const router = express.Router();
 
@@ -16,7 +19,7 @@ router.use(authController.protect);
 router.patch('/updateMyPassword', authController.updatePassword);
 router.get('/me', userController.getMe, 
            userController.getOneUser);
-router.patch('/updateMe', userController.updateMe);
+router.patch('/updateMe', userController.uploadUserPhoto, userController.updateMe);
 router.delete('/deleteMe', userController.deleteMe);
 
 // This middleware will protect belows routes from other users except admin

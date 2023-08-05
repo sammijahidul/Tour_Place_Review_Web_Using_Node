@@ -12,6 +12,7 @@ exports.createOne = Model => catchAsync( async (req, res, next) => {
         }
     })   
 });
+
 // Updating document handler
 exports.updateOne = Model => catchAsync(async (req, res, next) => {  
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, 
@@ -29,6 +30,7 @@ exports.updateOne = Model => catchAsync(async (req, res, next) => {
         }
     })        
 });
+
 // Deleting document handler
 exports.deleteOne = Model => catchAsync(async (req, res, next) => {    
     const doc = await Model.findByIdAndDelete(req.params.id);
@@ -40,6 +42,7 @@ exports.deleteOne = Model => catchAsync(async (req, res, next) => {
         data: null
     })         
 });
+
 // Getting document handler
 exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => { 
     let query = await Model.findById(req.params.id);
@@ -55,6 +58,7 @@ exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => {
         }
     })        
 });
+
 // Getting all document handler
 exports.getAll = Model => catchAsync(async (req, res, next) => {
     let filter = {};

@@ -15,7 +15,10 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         validate: [validator.isEmail, 'Please provide a valid email']
     },
-    photo: String,
+    photo: {
+        type: String,
+        default: 'default.jpg'
+    },
     role: {
         type: String, 
         enum: ['admin', 'user', 'guide', 'lead-guide'],
@@ -46,6 +49,7 @@ const userSchema = new mongoose.Schema({
         select: false
     }          
 });
+
 userSchema.pre('save', async function(next) {
     // if password is modified then this line will run
     if(!this.isModified('password')) return next();
@@ -54,20 +58,24 @@ userSchema.pre('save', async function(next) {
     this.passwordConfirm = undefined;
     next();
 });
+
 userSchema.pre('save', function(next) {
     if(!this.isModified('password') || this.isNew) return next();
     this.passwordChangedAt = Date.now() - 1000;
     next();
 
 });
+
 // Query Middleware
 userSchema.pre(/^find/, function(next) {
     this.find({active: {$ne: false}})
     next();
 });
+
 userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
     return await bcrypt.compare(candidatePassword, userPassword);
 };
+
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     if(this.passwordChangedAt) {
         const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
@@ -76,6 +84,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     }
     return false;
 };
+
 userSchema.methods.createPasswordResetToken = function() {
     const resetToken = crypto.randomBytes(32).toString('hex');
 
@@ -85,5 +94,6 @@ userSchema.methods.createPasswordResetToken = function() {
 
     return resetToken;  
 };
+
 const User = mongoose.model('User', userSchema);
 module.exports = User; 

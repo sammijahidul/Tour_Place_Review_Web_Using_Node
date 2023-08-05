@@ -7,7 +7,6 @@ const mongoseSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
-
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorControllers');
 const tourRouter = require('./routes/tourRoutes');
@@ -39,6 +38,7 @@ app.use(
 if(process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 };
+
 // Limit request from same api
 const limiter = rateLimit({
     max: 100,
@@ -64,9 +64,10 @@ app.use(hpp({
                 'ratingsAverage', 'maxGroupSize', 
                 'difficulty', 'price']
 }));
+
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
-    console.log(req.cookies);
+    // console.log(req.cookies);
     next();
 });
 
