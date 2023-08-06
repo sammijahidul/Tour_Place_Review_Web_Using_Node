@@ -19,7 +19,8 @@ router.use(authController.protect);
 router.patch('/updateMyPassword', authController.updatePassword);
 router.get('/me', userController.getMe, 
            userController.getOneUser);
-router.patch('/updateMe', userController.uploadUserPhoto, userController.updateMe);
+router.patch('/updateMe', userController.uploadUserPhoto, 
+             userController.resizePhoto,userController.updateMe);
 router.delete('/deleteMe', userController.deleteMe);
 
 // This middleware will protect belows routes from other users except admin
