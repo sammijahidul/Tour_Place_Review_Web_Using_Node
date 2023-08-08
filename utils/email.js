@@ -16,7 +16,15 @@ module.exports = class Email {
 
     newTransport() {
         if(process.env.NODE_ENV === 'production') {
-            return 1;
+            return nodemailer.createTransport({
+                host: "smtp-relay.brevo.com",
+                port: 587,
+                auth: {
+                    user: process.env.BREVO_USERNAME,
+                    pass: process.env.BREVO_PASSWORD
+                }
+
+            })
         }
           // Create a transporter
           return nodemailer.createTransport({
