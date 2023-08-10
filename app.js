@@ -12,6 +12,7 @@ const globalErrorHandler = require('./controllers/errorControllers');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
@@ -27,8 +28,14 @@ app.use(
     helmet.contentSecurityPolicy({
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "https://cdnjs.cloudflare.com"],
-        connectSrc: ["'self'", "http://127.0.0.1:4007", "ws://localhost:53792", "wss://localhost:53792"],
+        scriptSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://js.stripe.com/v3/"],
+        connectSrc: ["'self'", "http://127.0.0.1:4007", 
+                               "ws://localhost:53792", 
+                               "wss://localhost:53792",
+                               "ws://localhost:54803/",
+                               
+                    ],
+        frameSrc: ["'self'", 'https://js.stripe.com']         
         // Add more directives as needed to meet your application's requirements
       },
     })
@@ -76,6 +83,8 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
+
 
 app.all('*', (req, res, next) => {
     // res.status(400).json({
