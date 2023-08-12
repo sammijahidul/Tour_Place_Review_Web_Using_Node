@@ -7,6 +7,7 @@ const mongoseSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorControllers');
 const tourRouter = require('./routes/tourRoutes');
@@ -72,9 +73,10 @@ app.use(hpp({
                 'difficulty', 'price']
 }));
 
+app.use(compression());
+
 app.use((req, res, next) => {
-    req.requestTime = new Date().toISOString();
-    // console.log(req.cookies);
+    req.requestTime = new Date().toISOString();   
     next();
 });
 

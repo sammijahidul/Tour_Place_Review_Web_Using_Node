@@ -13,7 +13,7 @@ dotenv.config({path: './config.env'});
 const DB = process.env.DATABASE;
 mongoose.connect(DB)
     .then(() => {
-    console.log("Db is connected");
+    // console.log("Db is connected");
     })
     // .catch(error => 
     //     console.log('error')
@@ -28,10 +28,10 @@ const importData = async () => {
     await Tour.create(tours);
     await User.create(users, {validateBeforeSave: false});
     await Review.create(reviews);
-    console.log('Data successfully loaded');
+    // console.log('Data successfully loaded');
     process.exit();    
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   } 
 }
 // Deleted all data from collection
@@ -40,10 +40,10 @@ const deleteData = async () => {
     await Tour.deleteMany();
     await User.deleteMany();
     await Review.deleteMany();
-    console.log('Data succesfully Deleted');
+    // console.log('Data succesfully Deleted');
     process.exit();   
    } catch (error) {
-    console.log(error);
+    // console.log(error);
    }
 };
 if(process.argv[2] === '--import') {
@@ -51,7 +51,7 @@ if(process.argv[2] === '--import') {
 } else if (process.argv[2] === '--delete') {
   deleteData();
 }
-console.log(process.argv);
+// console.log(process.argv);
 // const fs = require('fs');
 // const mongoose = require('mongoose');
 // const dotenv = require('dotenv');
