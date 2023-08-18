@@ -1,13 +1,11 @@
 const express = require('express');
-const  multer = require('multer');
 const userController = require("../controllers/userControllers");
 const authController = require("../controllers/authControllers");
-
 
 // All routes related User Resource
 const router = express.Router();
 
-router.post('/signup', authController.signup);
+router.post('/signUp', authController.signUp);
 router.post('/login', authController.login); 
 router.get('/logout', authController.logout); 
 router.post('/forgotPassword', authController.forgotPassword);
